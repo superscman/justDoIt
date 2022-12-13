@@ -1,19 +1,20 @@
 package com.codestates.justDoIt.controller;
 
-import com.codestates.justDoIt.Mapper.TodoMapper;
+import com.codestates.justDoIt.mapper.TodoMapper;
 import com.codestates.justDoIt.dto.TodoDto;
 import com.codestates.justDoIt.entity.Todo;
-import com.codestates.justDoIt.response.MultiResponseDto;
 import com.codestates.justDoIt.response.SingleResponseDto;
 import com.codestates.justDoIt.service.TodoService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -30,9 +31,9 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity postTodo(@RequestBody TodoDto.Post post) {
+    public ResponseEntity postTodo(@Valid @RequestBody TodoDto.Post post) {
+        log.info("###############post to do HI");
         Todo todo = todoService.createTodo(mapper.todoPostDtoToTodo(post));
-
         return new ResponseEntity<>(todo, HttpStatus.CREATED);
     }
 
@@ -54,10 +55,27 @@ public class TodoController {
     }
     @GetMapping
     public ResponseEntity getTodos() {
+        log.info("##################getmapping Hi");
         List<Todo> todos = todoService.findTodos();
-
-        return new ResponseEntity<>(todos,HttpStatus.OK);
+        return new ResponseEntity<>(todos,HttpStatus.CREATED);
     }
+
+    @PostMapping("/redirect") // 일반 리다이렉션 겟으로 받는다.
+    public ResponseEntity<?> keepRedirect() {
+        HttpHeaders headers = new HttpHeaders();
+        log.info("###############postmaaping redirect to do HI");
+        headers.setLocation(URI.create("/"));
+
+        return new ResponseEntity<>(headers, HttpStatus.PERMANENT_REDIRECT);
+    }
+
+//    @GetMapping("/redirect") // 일반 리다이렉션 겟으로 받는다.
+//    public ResponseEntity<?> redirect() {
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        log.info("##################getmapping redirect Hi");
+//        httpHeaders.setLocation(URI.create("/"));
+//        return new ResponseEntity<>(httpHeaders, HttpStatus.MOVED_PERMANENTLY);
+//    }
 
 //    @GetMapping
 //    public ResponseEntity getTodos(@Positive @RequestParam int page,

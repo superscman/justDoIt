@@ -1,6 +1,7 @@
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.6'
+	id 'war'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
@@ -28,7 +29,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+	implementation 'com.google.code.gson:gson:2.10'
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()

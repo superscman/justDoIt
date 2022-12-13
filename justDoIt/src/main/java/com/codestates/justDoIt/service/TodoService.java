@@ -32,9 +32,9 @@ public class TodoService {
         Optional.ofNullable(todo.getTitle())
                 .ifPresent(name -> findTodo.setTitle(name));
         Optional.ofNullable(todo.getTodo_order())
-                .ifPresent(todo_order -> todo.setTodo_order(todo_order));
+                .ifPresent(todo_order -> findTodo.setTodo_order(todo_order));
         Optional.ofNullable((todo.isCompleted()))
-                .ifPresent(completed -> todo.setCompleted(completed));
+                .ifPresent(completed -> findTodo.setCompleted(completed));
 
         return toDoReopository.save(findTodo);
     }

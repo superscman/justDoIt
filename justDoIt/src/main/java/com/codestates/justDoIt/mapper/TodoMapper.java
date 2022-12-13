@@ -1,4 +1,4 @@
-package com.codestates.justDoIt.Mapper;
+package com.codestates.justDoIt.mapper;
 
 import com.codestates.justDoIt.dto.TodoDto;
 import com.codestates.justDoIt.entity.Todo;
