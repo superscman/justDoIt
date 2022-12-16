@@ -32,7 +32,6 @@ public class TodoController {
 
     @PostMapping
     public ResponseEntity postTodo(@Valid @RequestBody TodoDto.Post post) {
-        log.info("###############post to do HI");
         Todo todo = todoService.createTodo(mapper.todoPostDtoToTodo(post));
         return new ResponseEntity<>(todo, HttpStatus.CREATED);
     }
@@ -55,19 +54,18 @@ public class TodoController {
     }
     @GetMapping
     public ResponseEntity getTodos() {
-        log.info("##################getmapping Hi");
         List<Todo> todos = todoService.findTodos();
         return new ResponseEntity<>(todos,HttpStatus.CREATED);
     }
 
-    @PostMapping("/redirect") // 일반 리다이렉션 겟으로 받는다.
-    public ResponseEntity<?> keepRedirect() {
-        HttpHeaders headers = new HttpHeaders();
-        log.info("###############postmaaping redirect to do HI");
-        headers.setLocation(URI.create("/"));
-
-        return new ResponseEntity<>(headers, HttpStatus.PERMANENT_REDIRECT);
-    }
+//    @PostMapping("/redirect") // 일반 리다이렉션 겟으로 받는다.
+//    public ResponseEntity<?> keepRedirect() {
+//        HttpHeaders headers = new HttpHeaders();
+//        log.info("###############postmaaping redirect to do HI");
+//        headers.setLocation(URI.create("/"));
+//
+//        return new ResponseEntity<>(headers, HttpStatus.PERMANENT_REDIRECT);
+//    }
 
 //    @GetMapping("/redirect") // 일반 리다이렉션 겟으로 받는다.
 //    public ResponseEntity<?> redirect() {
