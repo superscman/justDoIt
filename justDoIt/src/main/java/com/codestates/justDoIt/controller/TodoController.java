@@ -53,10 +53,10 @@ public class TodoController {
                 new SingleResponseDto<>(mapper.todoToTodoResponse(todo)),HttpStatus.OK);
     }
     @GetMapping
-    public ResponseEntity getTodos() {
-        List<Todo> todos = todoService.findTodos();
-        System.out.println("To-do Application");
-        return new ResponseEntity<>(todos,HttpStatus.CREATED);
+    public String getTodos() {
+//        List<Todo> todos = todoService.findTodos();
+        return "Todo Application";
+//        return new ResponseEntity<>(todos,HttpStatus.CREATED);
     }
 
 //    @PostMapping("/redirect") // 일반 리다이렉션 겟으로 받는다.
