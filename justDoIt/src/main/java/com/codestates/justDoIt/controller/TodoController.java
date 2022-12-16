@@ -55,6 +55,7 @@ public class TodoController {
     @GetMapping
     public ResponseEntity getTodos() {
         List<Todo> todos = todoService.findTodos();
+        System.out.println("To-do Application");
         return new ResponseEntity<>(todos,HttpStatus.CREATED);
     }
 
