@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 public class TodoDto {
 
     @Getter
-//    @Setter
+    @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Post {
@@ -22,6 +22,7 @@ public class TodoDto {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Patch {
         private long id;
         private String title;
@@ -33,6 +34,7 @@ public class TodoDto {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Response {
         private long id;
         private String title;
