@@ -1,13 +1,14 @@
 package com.codestates.justDoIt.service;
 
+import com.codestates.justDoIt.dto.TodoDto;
 import com.codestates.justDoIt.entity.Todo;
-import com.codestates.justDoIt.exception.BusinessLogicException;
-import com.codestates.justDoIt.exception.ExceptionCode;
 import com.codestates.justDoIt.repository.ToDoReopository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,19 +22,17 @@ public class TodoService {
     }
 
     public Todo createTodo(Todo todo) {
-        verifyExistsTodo(todo.getTitle());
-
         return toDoReopository.save(todo);
     }
 
-    public Todo updateTodo(Todo todo) {
-        Todo findTodo = findVerifiedTodo(todo.getId());
+    public Todo updateTodo(long todoId, TodoDto.Request request) {
+        Todo findTodo = findVerifiedTodo(todoId);
 
-        Optional.ofNullable(todo.getTitle())
-                .ifPresent(name -> findTodo.setTitle(name));
-        Optional.ofNullable(todo.getTodo_order())
-                .ifPresent(todo_order -> findTodo.setTodo_order(todo_order));
-        Optional.ofNullable((todo.isCompleted()))
+        Optional.ofNullable(request.getTitle())
+                .ifPresent(title -> findTodo.setTitle(title));
+        Optional.ofNullable(request.getOrder())
+                .ifPresent(order -> findTodo.setOrder(order));
+        Optional.ofNullable((request.isCompleted()))
                 .ifPresent(completed -> findTodo.setCompleted(completed));
 
         return toDoReopository.save(findTodo);
@@ -62,13 +61,13 @@ public class TodoService {
     public Todo findVerifiedTodo(long todoId) {
         Optional<Todo> optionalTodo = toDoReopository.findById(todoId);
 
-        Todo findTodo = optionalTodo.orElseThrow(()->new BusinessLogicException(ExceptionCode.TODO_NOT_FOUND));
+        Todo findTodo = optionalTodo.orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
         return findTodo;
     }
 
-    private void verifyExistsTodo(String title) {
-        Optional<Todo> todo = toDoReopository.findByTitle(title);
-        if(todo.isPresent())
-            throw new BusinessLogicException(ExceptionCode.TODO_EXISTS);
-    }
+//    private void verifyExistsTodo(String title) {
+//        Optional<Todo> todo = toDoReopository.findByTitle(title);
+//        if(todo.isPresent())
+//            throw new BusinessLogicException(ExceptionCode.TODO_EXISTS);
+//    }
 }

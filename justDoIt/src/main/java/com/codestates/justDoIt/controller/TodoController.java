@@ -5,8 +5,8 @@ import com.codestates.justDoIt.dto.TodoDto;
 import com.codestates.justDoIt.entity.Todo;
 import com.codestates.justDoIt.response.SingleResponseDto;
 import com.codestates.justDoIt.service.TodoService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,49 +14,42 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-import java.net.URI;
 import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "https://todobackend.com")
 @Validated
 @Slf4j
+@RequiredArgsConstructor
 public class TodoController {
     private final TodoService todoService;
     private final TodoMapper mapper;
 
-    public TodoController(TodoService toDoService, TodoMapper mapper) {
-        this.todoService = toDoService;
-        this.mapper = mapper;
-    }
-
     @PostMapping
-    public ResponseEntity postTodo(@Valid @RequestBody TodoDto.Post post) {
-        Todo todo = todoService.createTodo(mapper.todoPostDtoToTodo(post));
-        return new ResponseEntity<>(todo, HttpStatus.CREATED);
+    public ResponseEntity postTodo(@Valid @RequestBody TodoDto.Request post) {
+        Todo todo = todoService.createTodo(mapper.todoRequestToTodo(post));
+        return new ResponseEntity<>(mapper.todoToTodoDtoResponse(todo), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity patchTodo(@PathVariable("id") @Positive long id,
-                                    @RequestBody TodoDto.Patch patch){
-        patch.setId(id);
-        Todo todo = todoService.updateTodo(mapper.todoPatchDtoToTodo(patch));
+                                    @RequestBody TodoDto.Request patch){
 
-        return new ResponseEntity<>(mapper.todoToTodoResponse(todo),HttpStatus.OK);
+        Todo todo = todoService.updateTodo(id, patch);
+
+        return new ResponseEntity<>(mapper.todoToTodoDtoResponse(todo),HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity getTodo(@PathVariable("id") @Positive long id) {
         Todo todo = todoService.findTodo(id);
 
-        return new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.todoToTodoResponse(todo)),HttpStatus.OK);
+        return new ResponseEntity<>(mapper.todoToTodoDtoResponse(todo),HttpStatus.OK);
     }
     @GetMapping
-    public String getTodos() {
-//        List<Todo> todos = todoService.findTodos();
-        return "Todo Application";
-//        return new ResponseEntity<>(todos,HttpStatus.CREATED);
+    public ResponseEntity getTodos() {
+        List<Todo> todos = todoService.findTodos();
+        return new ResponseEntity<>(mapper.todosToTodoDtoResponse(todos),HttpStatus.OK);
     }
 
 //    @PostMapping("/redirect") // 일반 리다이렉션 겟으로 받는다.
