@@ -2,20 +2,63 @@ package com.codestates.justDoIt.mapper;
 
 import com.codestates.justDoIt.dto.TodoDto;
 import com.codestates.justDoIt.entity.Todo;
-import org.mapstruct.Mapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
-public interface TodoMapper {
-    default Todo todoPostDtoToTodo(TodoDto.Post requestBody){
-        Todo todo = new Todo();
-        todo.setTodo_order(requestBody.getOrder());
-        todo.setTitle(requestBody.getTitle());
-        todo.setCompleted(requestBody.isCompleted());
+@Component
+public class TodoMapper {
+    public Todo todoRequestToTodo(TodoDto.Request request) {
+        if(request == null) {return null;}
+
+        if(ObjectUtils.isEmpty(request.getTitle())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        if(ObjectUtils.isEmpty(request.getOrder())) {
+            request.setOrder(0L);
+        }
+
+        if(ObjectUtils.isEmpty(request.isCompleted())) {
+            request.setCompleted(false);
+        }
+
+        Todo todo = Todo
+                .builder()
+                .title(request.getTitle())
+                .order(request.getOrder())
+                .completed(request.isCompleted())
+                .build();
+
         return todo;
-    };
-    Todo todoPatchDtoToTodo(TodoDto.Patch requestBody);
-    TodoDto.Response todoToTodoResponse(Todo todo);
-    List<TodoDto.Response> todosToTodoResponse(List<Todo> todos);
+    }
+    public TodoDto.Response todoToTodoDtoResponse(Todo todo) {
+        if (todo == null) {
+            return null;
+        }
+
+        TodoDto.Response response = TodoDto.Response
+                .builder()
+                .id(todo.getId())
+                .title(todo.getTitle())
+                .order(todo.getOrder())
+                .completed(todo.isCompleted())
+                .url("http://localhost:8080/"+todo.getId())
+                .build();
+        return response;
+    }
+
+    public List<TodoDto.Response> todosToTodoDtoResponse(List<Todo> todos) {
+        if(todos == null) { return null;}
+
+        List<TodoDto.Response> list = new ArrayList<>(todos.size());
+        for (Todo todo : todos) {
+            list.add(todoToTodoDtoResponse(todo));
+        }
+        return list;
+    }
 }
