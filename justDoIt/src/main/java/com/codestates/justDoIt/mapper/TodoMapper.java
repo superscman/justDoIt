@@ -13,7 +13,7 @@ import java.util.List;
 @Component
 public class TodoMapper {
     public Todo todoRequestToTodo(TodoDto.Request request) {
-        if(request == null) {return null;}
+        if(request == null) {return null;} //null 값 처리하는 것을 잊지말자
 
         if(ObjectUtils.isEmpty(request.getTitle())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
