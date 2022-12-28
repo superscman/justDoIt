@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class TodoMapper {//애너테이션 데이터는 뺌
+public class TodoMapper {
     public Todo todoRequestToTodo(TodoDto.Request request) {
         if(request == null) {return null;} //null 값 처리하는 것을 잊지말자
 
@@ -49,6 +49,7 @@ public class TodoMapper {//애너테이션 데이터는 뺌
                 .completed(todo.isCompleted())
                 .url("http://localhost:8080/"+todo.getId())
                 .build();
+        //빌더를 쓰면 괴장히 깔끔해집니다.
         return response;
     }
 
