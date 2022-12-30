@@ -32,7 +32,7 @@ public class TodoMapper {
                 .title(request.getTitle())
                 .order(request.getOrder())
                 .completed(request.isCompleted())
-                .build();
+                .build();//빌더를 쓰는연습을 해야됩니다.
 
         return todo;
     }
